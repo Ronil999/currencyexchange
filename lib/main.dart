@@ -70,67 +70,78 @@ class _ExchangePageState extends State<ExchangePage> {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Flexible(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Amount',
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        setState(() {
-                          _amount = double.tryParse(value) ?? 0.0;
-                        });
-                        _fetchExchangeRate();
-                      },
-                    ),
-                  ),
-                  DropdownButton<String>(
-                    value: _baseCurrency,
-                    onChanged: (String? newValue) {
-                      if (newValue != null) {
-                        setState(() {
-                          _baseCurrency = newValue;
-                          if (_targetCurrency == _baseCurrency) {
-                            _targetCurrency = _currencies.firstWhere(
-                                (currency) => currency != _baseCurrency);
-                          }
-                        });
-                        _fetchExchangeRate();
-                      }
-                    },
-                    items: _currencies
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ],
+              TextField(
+                decoration: InputDecoration(
+                  labelText: 'Amount',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    _amount = double.tryParse(value) ?? 0.0;
+                  });
+                  _fetchExchangeRate();
+                },
               ),
               SizedBox(height: 20),
-              DropdownButton<String>(
-                value: _targetCurrency,
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      _targetCurrency = newValue;
-                    });
-                    _fetchExchangeRate();
-                  }
-                },
-                items: _currencies
-                    .where((currency) => currency != _baseCurrency)
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: DropdownButton<String>(
+                        value: _baseCurrency,
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              _baseCurrency = newValue;
+                              if (_targetCurrency == _baseCurrency) {
+                                _targetCurrency = _currencies.firstWhere(
+                                    (currency) => currency != _baseCurrency);
+                              }
+                            });
+                            _fetchExchangeRate();
+                          }
+                        },
+                        items: _currencies
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text('to'), // Display "to" between the dropdowns
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: DropdownButton<String>(
+                        value: _targetCurrency,
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              _targetCurrency = newValue;
+                            });
+                            _fetchExchangeRate();
+                          }
+                        },
+                        items: _currencies
+                            .where((currency) => currency != _baseCurrency)
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 20),
               Text(
